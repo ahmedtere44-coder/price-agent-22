@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRICE — Pricing Agent · AladdinB2B</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #FF681A;
+    --orange-light: #fff3ee;
+    --orange-mid: #ffe0d0;
+    --dark: #1a1a2e;
+    --text: #2d2d2d;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --bg: #f9fafb;
+    --white: #ffffff;
+    --radius: 12px;
+    --shadow: 0 2px 16px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .topbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar img { height: 38px; object-fit: contain; }
+  .agent-badge {
+    background: var(--orange-light);
+    color: var(--orange);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 4px 12px; border-radius: 20px;
+    border: 1px solid var(--orange-mid);
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #fff8f5 0%, #fff 60%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 40px;
+    display: flex; align-items: flex-start; gap: 20px;
+  }
+  .hero-icon {
+    width: 56px; height: 56px;
+    background: var(--orange); border-radius: 16px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .hero h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px; font-weight: 800;
+    color: var(--dark); letter-spacing: -0.03em; margin-bottom: 6px;
+  }
+  .hero h1 span { color: var(--orange); }
+  .hero p { font-size: 15px; color: var(--muted); line-height: 1.6; }
+
+  .main { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 28px; margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title::before { content: ''; width: 3px; height: 14px; background: var(--orange); border-radius: 2px; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:600px){ .form-grid { grid-template-columns: 1fr; } }
+
+  .form-group { margin-bottom: 0; }
+  .form-group.full { grid-column: 1 / -1; }
+  label {
+    display: block; font-size: 13px; font-weight: 600;
+    color: var(--text); margin-bottom: 8px;
+  }
+  label span { font-weight: 400; color: var(--muted); }
+  select, input[type=text], input[type=number] {
+    width: 100%;
+    font-family: 'Inter', sans-serif; font-size: 14px;
+    color: var(--text); background: var(--white);
+    border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 11px 14px; outline: none; transition: border-color 0.15s;
+  }
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+    padding-right: 36px; cursor: pointer;
+  }
+  select:focus, input:focus { border-color: var(--orange); }
+
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--orange); color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px; font-weight: 700;
+    border: none; border-radius: 8px;
+    padding: 12px 28px; cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--orange);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px; font-weight: 700;
+    border: 1.5px solid var(--orange); border-radius: 8px;
+    padding: 11px 20px; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: var(--orange-light); }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+
+  .loading-bar { height: 3px; background: var(--orange-mid); border-radius: 2px; overflow: hidden; margin-bottom: 20px; display: none; }
+  .loading-bar.active { display: block; }
+  .loading-bar-inner { height: 100%; background: var(--orange); border-radius: 2px; width: 30%; animation: loading 1.5s ease-in-out infinite; }
+  @keyframes loading { 0%{transform:translateX(-100%)} 100%{transform:translateX(430%)} }
+  .loading-text { text-align: center; font-size: 14px; color: var(--muted); padding: 20px; display: none; }
+  .loading-text.active { display: block; }
+
+  #outputSection { display: none; }
+
+  .result-card {
+    background: var(--white); border-radius: var(--radius);
+    border: 1px solid var(--border); overflow: hidden;
+    margin-bottom: 20px; box-shadow: var(--shadow);
+  }
+  .result-header {
+    background: var(--dark); padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .result-header-left { display: flex; align-items: center; gap: 10px; }
+  .result-header h2 { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; color: #fff; letter-spacing: 0.04em; }
+  .dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: blink 2s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .result-body { padding: 24px; }
+  .result-section { padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .result-section:last-child { border-bottom: none; padding-bottom: 0; }
+  .result-section:first-child { padding-top: 0; }
+  .section-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .section-badge {
+    background: var(--orange-light); color: var(--orange);
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 20px;
+  }
+  .section-content { font-size: 15px; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
+
+  .price-highlight {
+    background: linear-gradient(135deg, #fff8f5, #fff3ee);
+    border: 2px solid var(--orange);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .price-highlight-icon {
+    width: 48px; height: 48px; background: var(--orange);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .price-highlight h3 { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+  .price-highlight .price-val { font-family: 'Montserrat', sans-serif; font-size: 26px; font-weight: 800; color: var(--orange); }
+
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--dark); color: #fff;
+    font-size: 14px; font-weight: 500;
+    padding: 12px 20px; border-radius: 8px;
+    display: none; align-items: center; gap: 8px;
+    z-index: 999; animation: slideUp 0.3s ease;
+  }
+  .toast.show { display: flex; }
+  @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <svg height="38" viewBox="0 0 220 65" xmlns="http://www.w3.org/2000/svg">
+  <!-- Lamp body -->
+  <ellipse cx="38" cy="38" rx="22" ry="13" fill="none" stroke="#FF681A" stroke-width="3"/>
+  <ellipse cx="38" cy="38" rx="9" ry="9" fill="#FF681A"/>
+  <!-- Spout -->
+  <path d="M52,28 Q68,14 80,20" stroke="#FF681A" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <circle cx="82" cy="19" r="3" fill="#FF681A"/>
+  <circle cx="88" cy="15" r="2.5" fill="#FF681A" opacity="0.75"/>
+  <circle cx="94" cy="13" r="2" fill="#FF681A" opacity="0.55"/>
+  <circle cx="99" cy="11" r="1.5" fill="#FF681A" opacity="0.35"/>
+  <!-- Handle -->
+  <path d="M22,42 Q17,50 19,55" stroke="#FF681A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M19,55 Q15,60 21,62" stroke="#FF681A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Text -->
+  <text x="108" y="48" font-family="Montserrat,Arial Black,sans-serif" font-weight="800" font-size="34" fill="#FF681A" letter-spacing="-1">Aladdin</text>
+</svg>
+  <span class="agent-badge">💰 PRICE AGENT</span>
+</div>
+
+<div class="hero">
+
+  <div>
+    <h1>PRICE — <span>Pricing Agent</span></h1>
+    <p>Get the optimal AladdinB2B pricing recommendation for any client segment, geography, and deal size — powered by ICP v2.0.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="card">
+    <div class="card-title">Client Profile</div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label for="segment">Client Segment</label>
+        <select id="segment">
+          <option value="">— Select segment —</option>
+          <option value="Trade Show Organizer">Trade Show Organizer</option>
+          <option value="Government Trade & Investment Agency">Government Trade & Investment Agency</option>
+          <option value="SME / Mid-Market Company">SME / Mid-Market Company</option>
+          <option value="Global Business Club">Global Business Club (Partner)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="country">Country / Region</label>
+        <select id="country">
+          <option value="">— Select country —</option>
+          <optgroup label="🇺🇸 USA">
+            <option>USA — Las Vegas</option>
+            <option>USA — Chicago</option>
+            <option>USA — New York</option>
+            <option>USA — Texas</option>
+            <option>USA — California</option>
+          </optgroup>
+          <optgroup label="🇬🇧 UK">
+            <option>UK — London</option>
+            <option>UK — Birmingham</option>
+            <option>UK — Manchester</option>
+          </optgroup>
+          <optgroup label="🇩🇪 Germany">
+            <option>Germany — Munich</option>
+            <option>Germany — Berlin</option>
+            <option>Germany — Dusseldorf</option>
+          </optgroup>
+          <optgroup label="🇫🇷 France">
+            <option>France — Paris</option>
+          </optgroup>
+          <optgroup label="🇨🇦 Canada">
+            <option>Canada — Toronto</option>
+            <option>Canada — Vancouver</option>
+          </optgroup>
+          <optgroup label="Middle East">
+            <option>UAE — Dubai / Abu Dhabi</option>
+            <option>Saudi Arabia — Riyadh</option>
+          </optgroup>
+          <optgroup label="Africa & Asia">
+            <option>South Africa — Johannesburg</option>
+            <option>Singapore</option>
+            <option>Egypt</option>
+            <option>Azerbaijan</option>
+          </optgroup>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="industry">Industry / Sector</label>
+        <select id="industry">
+          <option value="">— Select industry —</option>
+          <option>Manufacturing</option>
+          <option>Technology & SaaS</option>
+          <option>Logistics & Supply Chain</option>
+          <option>Healthcare & Medical</option>
+          <option>Food & Agriculture</option>
+          <option>Construction & Real Estate</option>
+          <option>Energy & Clean Tech</option>
+          <option>Professional Services</option>
+          <option>Automotive</option>
+          <option>Government / Public Sector</option>
+          <option>Executive Networking / Business Clubs</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="companySize">Company / Event Size</label>
+        <select id="companySize">
+          <option value="">— Select size —</option>
+          <option value="Small — Under 10 employees or under 200 exhibitors">Small (under 10 staff / under 200 exhibitors)</option>
+          <option value="Mid — 10-100 employees or 200-500 exhibitors">Mid (10–100 staff / 200–500 exhibitors)</option>
+          <option value="Large — 100-500 employees or 500-1500 exhibitors">Large (100–500 staff / 500–1,500 exhibitors)</option>
+          <option value="Enterprise — 500+ employees or 1500+ exhibitors">Enterprise (500+ staff / 1,500+ exhibitors)</option>
+        </select>
+      </div>
+
+      <div class="form-group full">
+        <label for="context">Additional Context <span>(optional — buying signals, pain points, competitor tools used)</span></label>
+        <input type="text" id="context" placeholder="e.g. Currently using Swapcard, recently raised Series A, expanding into MENA...">
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="generateBtn" onclick="generatePrice()">
+        💰 Get Pricing Recommendation
+      </button>
+    </div>
+  </div>
+
+  <div class="loading-bar" id="loadingBar"><div class="loading-bar-inner"></div></div>
+  <div class="loading-text" id="loadingText">✦ PRICE Agent is calculating the optimal recommendation...</div>
+
+  <div id="outputSection">
+
+    <div class="price-highlight" id="priceHighlight">
+      <div class="price-highlight-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"></line>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+      </div>
+      <div>
+        <h3>RECOMMENDED PLAN</h3>
+        <div class="price-val" id="priceVal">—</div>
+      </div>
+    </div>
+
+    <div class="result-card">
+      <div class="result-header">
+        <div class="result-header-left">
+          <div class="dot"></div>
+          <h2>PRICING RECOMMENDATION READY</h2>
+        </div>
+        <span style="font-size:12px;color:rgba(255,255,255,0.4);font-family:'Montserrat',sans-serif;">ICP v2.0 · ALADDINB2B</span>
+      </div>
+      <div class="result-body" id="resultBody"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" onclick="copyResult()">⎘ Copy Recommendation</button>
+      <button class="btn-secondary" onclick="resetForm()">↺ New Query</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ Recommendation copied to clipboard</div>
+
+<script>
+const GROQ_API_KEY = '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';
+let currentResult = '';
+
+async function generatePrice() {
+  const segment = document.getElementById('segment').value;
+  const country = document.getElementById('country').value;
+  const industry = document.getElementById('industry').value;
+  const companySize = document.getElementById('companySize').value;
+  const context = document.getElementById('context').value.trim();
+
+  if (!segment || !country || !industry || !companySize) {
+    alert('Please fill in all required fields.');
+    return;
+  }
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Calculating...';
+  document.getElementById('loadingBar').classList.add('active');
+  document.getElementById('loadingText').classList.add('active');
+  document.getElementById('outputSection').style.display = 'none';
+
+  const systemPrompt = `You are PRICE, a pricing intelligence agent for AladdinB2B — a global B2B deal-making infrastructure platform with 160M+ decision-maker contacts across 100+ countries, 300+ classification points per company, and zero wrong matches guaranteed.
+
+AladdinB2B's pricing tiers:
+- Self-Serve Plan: $199/month — SMEs, startups, smaller companies
+- Growth Plan: $499–$999/month — Mid-market companies, regional expansion
+- Managed Service: $2,000–$8,000/month — Large enterprises, trade show organizers, government agencies
+- Enterprise/Event License: $10,000–$50,000 per event — Major trade shows (500+ exhibitors), government trade missions
+- Partnership/White-Label: Revenue share or annual license — Business clubs and channel partners
+
+ICP segments:
+1. Trade Show Organizers (200–1,500 exhibitors) — core pain: exhibitor ROI at renewal. Decision: 2–4 weeks.
+2. Government Trade & Investment Agencies — core pain: post-mission accountability. Decision: 4–8 weeks.
+3. SMEs 10–500 employees — core pain: cost per qualified meeting vs booth ($8k+) or SDR ($6k/mo). Decision: 1–2 weeks.
+4. Business Clubs (200+ members, $1k+ annual fee) — partnership model, core pain: member retention. Decision: 4–12 weeks.
+
+Proof points to use when relevant: 160,000+ B2B meetings facilitated, $780M verified deal value from $4.37B pipeline, trusted by Informa Markets, Messe Frankfurt, UK Government, JETRO, KOTRA, Government of Singapore, 122 government promotion agencies globally.`;
+
+  const userPrompt = `Client profile:
+- Segment: ${segment}
+- Country/Region: ${country}
+- Industry: ${industry}
+- Company/Event Size: ${companySize}
+${context ? '- Additional context: ' + context : ''}
+
+Provide a structured pricing recommendation with these exact sections:
+
+RECOMMENDED PLAN:
+[State the specific plan name and price range. Be direct.]
+
+WHY THIS PLAN:
+[2–3 sentences explaining why this plan fits this client based on their segment, size, and geography.]
+
+PRICING RANGE:
+[Give a specific number or range, e.g. "$499/month" or "$15,000 per event". Be concrete.]
+
+KEY SELLING POINTS:
+[3 bullet points tailored to this client's pain points from the ICP. Use AladdinB2B proof points where relevant.]
+
+NEGOTIATION NOTES:
+[1–2 sentences on how to handle pricing objections or when to offer a discount/pilot.]
+
+DECISION TIMELINE:
+[Expected sales cycle for this segment and how to accelerate it.]`;
+
+  try {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + GROQ_API_KEY
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 900,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error?.message || 'API error');
+    }
+
+    const data = await response.json();
+    const text = data.choices[0].message.content;
+    currentResult = text;
+    renderResult(text);
+    document.getElementById('outputSection').style.display = 'block';
+    document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch(e) {
+    alert('Error: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💰 Get Pricing Recommendation';
+    document.getElementById('loadingBar').classList.remove('active');
+    document.getElementById('loadingText').classList.remove('active');
+  }
+}
+
+const SECTION_BADGES = {
+  'RECOMMENDED PLAN': 'Top Pick',
+  'WHY THIS PLAN': 'Rationale',
+  'PRICING RANGE': 'Price',
+  'KEY SELLING POINTS': 'Sales',
+  'NEGOTIATION NOTES': 'Objections',
+  'DECISION TIMELINE': 'Timeline'
+};
+
+function renderResult(text) {
+  const sections = text.split(/\n(?=[A-Z][A-Z\s&]+:)/);
+  let html = '';
+  let firstPrice = '';
+
+  for (const section of sections) {
+    const match = section.match(/^([A-Z][A-Z\s&]+):\s*([\s\S]*)/);
+    if (match) {
+      const label = match[1].trim();
+      const content = match[2].trim();
+      const badge = SECTION_BADGES[label] || '';
+      if (label === 'RECOMMENDED PLAN' || label === 'PRICING RANGE') {
+        if (!firstPrice) firstPrice = content.split('\n')[0].replace(/\*/g, '').trim();
+      }
+      html += `<div class="result-section">
+        <div class="section-label">
+          ${label}
+          ${badge ? '<span class="section-badge">' + badge + '</span>' : ''}
+        </div>
+        <div class="section-content">${content}</div>
+      </div>`;
+    }
+  }
+
+  if (!html) html = `<div class="result-section"><div class="section-content">${text}</div></div>`;
+
+  document.getElementById('resultBody').innerHTML = html;
+  if (firstPrice) document.getElementById('priceVal').textContent = firstPrice;
+}
+
+function copyResult() {
+  navigator.clipboard.writeText(currentResult).then(() => {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  });
+}
+
+function resetForm() {
+  ['segment','country','industry','companySize'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('context').value = '';
+  document.getElementById('outputSection').style.display = 'none';
+  currentResult = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
